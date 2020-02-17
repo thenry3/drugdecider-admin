@@ -1,0 +1,10 @@
+<% if (messages.info_i) { %>
+    <%= messages.info_i%>
+<% } %>
+<h1>hi <%= name %></h1>
+<form action="/logout?_method=DELETE" method="POST">
+    <button type="submit">Logout</button>
+</form>
+<form action="/changePassword" method="POST">
+    <button type="submit">Change Password</button>
+</form>
