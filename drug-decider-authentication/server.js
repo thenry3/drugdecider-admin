@@ -5,42 +5,76 @@ if(process.env.NODE_ENV !== 'production'){
 const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
-const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
 const methodOverride = require('method-override');
-
-const initializePassport = require('./passport-config');
-
-initializePassport(
-    passport, 
-    username => {
-        return users.find(user => user.username === username); //need to be replace by accessing mongodb
-    },
-    id => {
-        return users.find(user => user.id === id);
-    }
-);
-
-const users = [];
 
 app.set('view-engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
 app.use(flash());
 app.use(session({
     secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    resave: false
 }));
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(methodOverride('_method'));
 
+/* MONGOOSE SETUP */
+
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/MyDatabase');
+
+const Schema = mongoose.Schema;
+const UserDetail = new Schema({
+      username: String,
+      password: String
+    });
+const UserDetails = mongoose.model('user', UserDetail, 'user');
+
+/*  PASSPORT SETUP  */
+
+const passport = require('passport');
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser(function(user, cb) {
+  cb(null, user);
+});
+
+passport.deserializeUser(function(id, cb) {
+  UserDetails.findById(id, function(err, user) {
+    cb(err, user);
+  });
+});
+
+
+/* PASSPORT LOCAL AUTHENTICATION */
+
+const LocalStrategy = require('passport-local').Strategy;
+
+passport.use('local', new LocalStrategy(
+  (username, password, done) => {
+      UserDetails.findOne({
+        username: username 
+      }, async (err, user) => {
+        if (err) {
+          return done(err);
+        }
+        if (!user) {
+          return done(null, false, {message: 'Username does not exist.'});
+        }
+        if (await bcrypt.compare(password, user.password)) {
+            return done(null, user);
+        }
+        return done(null, false, { message: 'Wrong password.'});
+      });
+  }
+));
 
 app.get('/', checkAuthenticated, (req, res) => {
     req.flash('info_i', req.session.messagei);
     req.session.messagei = "";
-    res.render('index.ejs', { name: req.user.username })
+    res.render('index.ejs', { name: req.user.username });
 });
 
 app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
@@ -48,24 +82,6 @@ app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
     failureRedirect: '/login',
     failureFlash: true
 }));
-
-app.get('/register', checkNotAuthenticated, (req, res) => {
-    res.render('register.ejs');
-});
-
-app.post('/register', checkNotAuthenticated, async (req, res) => {
-    try{
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        users.push({
-            id: Date.now().toString(),
-            username: req.body.username,
-            password: hashedPassword
-        });
-        res.redirect('/login');
-    } catch {
-        res.redirect('/register');
-    }
-});
 
 app.get('/login', checkNotAuthenticated, (req, res) => {
     res.render('login.ejs');
@@ -81,9 +97,13 @@ app.post('/changePassword', checkAuthenticated, async (req, res) => {
             //check if new passwords are the same
             if(req.body.newPassword.localeCompare(req.body.confirmPassword) == 0){
                 const hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
-                req.user.password = hashedPassword; //need to update pswd in db
+                UserDetails.update({_id:req.user._id}, {$set:{'password':hashedPassword}}, function(err) {
+                    if (err){
+                        req.session.message = "could not update password";
+                        throw "could not update password"
+                    }
+                });
                 req.session.messagei = "Password successfully updated.";
-                
             }else{
                 req.session.message = "New passwords do not match.";
                 throw "bad new password";
