@@ -20,6 +20,7 @@ app.use(
   })
 );
 app.use(methodOverride('_method'));
+app.use(express.static(__dirname + '/views'));
 
 /* MONGOOSE SETUP */
 
