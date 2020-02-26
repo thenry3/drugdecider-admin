@@ -25,7 +25,7 @@ app.use(express.static(__dirname + '/views'));
 /* MONGOOSE SETUP */
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/MyDatabase');
+mongoose.connect('mongodb://localhost/drugdecider');
 
 const Schema = mongoose.Schema;
 const UserDetail = new Schema({
