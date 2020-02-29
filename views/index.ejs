@@ -1,11 +1,10 @@
 <% if (messages.info_i) { %> <%= messages.info_i%> <% } %>
 <h1>hi <%= name %></h1>
-<form action="/getexcel">
-  <button type="submit">Download Data</button>
-</form>
+<button onclick="callCSV()">Download Data</button>
 <form action="/logout?_method=DELETE" method="POST">
   <button type="submit">Logout</button>
 </form>
 <form action="/changePassword" method="POST">
   <button type="submit">Change Password</button>
 </form>
+<script src="functions.js"></script>

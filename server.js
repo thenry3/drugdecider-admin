@@ -84,9 +84,9 @@ const InfoSchema = new mongoose.Schema({
   gender: { type: String, required: true, enum: ["M", "F"] }
 });
 
-this.scoresMap = mongoose.model("scores", ScoresSchema);
-this.infoMap = mongoose.model("info", InfoSchema);
-this.submissionMap = mongoose.model("submission", SubmissionSchema);
+let scoresMap = mongoose.model("scores", ScoresSchema);
+let infoMap = mongoose.model("info", InfoSchema);
+let submissionMap = mongoose.model("submission", SubmissionSchema);
 const UserDetails = mongoose.model("users", UserDetail, "users");
 
 /*  PASSPORT SETUP  */
@@ -195,7 +195,7 @@ app.delete("/logout", (req, res) => {
 });
 
 app.get("/getexcel", checkAuthenticated, (req, res) => {
-  getDataExcel();
+  res.send({ data: getDataExcel() });
 });
 
 function checkAuthenticated(req, res, next) {
@@ -213,7 +213,8 @@ function checkNotAuthenticated(req, res, next) {
 }
 
 async function retrieveData() {
-  var submissionCursor = await this.submissionMap.find();
+  var submissionCursor = await submissionMap.find();
+  if (submissionCursor == null) return [];
 
   return submissionCursor.map(async submission => {
     var infoJSON = await this.infoMap.findById(submission.info);
@@ -382,13 +383,20 @@ function getDataExcel(req, res, next) {
   }
 
   arr.concat(patients);
+
+  return arr;
+
   let ws = XLSX.utils.aoa_to_sheet(arr);
   let wb = XLSX.utils.book_new();
   wb.SheetNames.push("PANSS Info");
   wb.Sheets["PANSS Info"] = ws;
-
-  let wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
-  XLSX.writeFile(wb, "panss.xlsx");
+  // let wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
+  let wbout = XLSX.write(wb, {
+    bookType: "xlsx",
+    bookSST: false,
+    type: "array"
+  });
+  return wbout;
   // var buf = new ArrayBuffer(wbout.length); //convert s to arrayBuffer
   // var view = new Uint8Array(buf); //create uint8array as viewer
   // for (var i = 0; i < wbout.length; i++) view[i] = wbout.charCodeAt(i) & 0xff; //convert to octet
