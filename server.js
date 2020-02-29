@@ -388,7 +388,7 @@ function getDataExcel(req, res, next) {
   wb.Sheets["PANSS Info"] = ws;
 
   let wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
-  XLSX.writeFile(wbout, "panss.xlsx");
+  XLSX.writeFile(wb, "panss.xlsx");
   // var buf = new ArrayBuffer(wbout.length); //convert s to arrayBuffer
   // var view = new Uint8Array(buf); //create uint8array as viewer
   // for (var i = 0; i < wbout.length; i++) view[i] = wbout.charCodeAt(i) & 0xff; //convert to octet
