@@ -83,9 +83,9 @@ const InfoSchema = new mongoose.Schema({
   gender: { type: String, required: true, enum: ["M", "F"] }
 });
 
-this.scoresMap = mongoose.model("scores", scores);
-this.infoMap = mongoose.model("info", info);
-this.submissionMap = mongoose.model("submission", submission);
+this.scoresMap = mongoose.model("scores", ScoresSchema);
+this.infoMap = mongoose.model("info", InfoSchema);
+this.submissionMap = mongoose.model("submission", SubmissionSchema);
 const UserDetails = mongoose.model("users", UserDetail, "users");
 
 /*  PASSPORT SETUP  */
