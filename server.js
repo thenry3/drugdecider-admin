@@ -193,6 +193,10 @@ app.delete("/logout", (req, res) => {
   res.redirect("/login");
 });
 
+app.get("/getexcel", checkAuthenticated, (req, res) => {
+  getDataExcel();
+});
+
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();

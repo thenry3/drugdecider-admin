@@ -1,10 +1,14 @@
-<% if (messages.info_i) { %>
-    <%= messages.info_i%>
-<% } %>
+<% if (messages.info_i) { %> <%= messages.info_i%> <% } %>
 <h1>hi <%= name %></h1>
+<button onclick="callExcel()">Download Data</button>
 <form action="/logout?_method=DELETE" method="POST">
-    <button type="submit">Logout</button>
+  <button type="submit">Logout</button>
 </form>
 <form action="/changePassword" method="POST">
-    <button type="submit">Change Password</button>
+  <button type="submit">Change Password</button>
 </form>
+<script>
+  function callExcel() {
+    fetch("/getexcel");
+  }
+</script>
