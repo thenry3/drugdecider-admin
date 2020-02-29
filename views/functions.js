@@ -14,4 +14,4 @@ async function callCSV() {
   hiddenLink.click();
 }
 
-document.getElementById("databutton").addEventListener("click", callExcel);
+document.getElementById("databutton").addEventListener("click", callCSV);
