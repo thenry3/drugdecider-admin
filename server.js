@@ -389,6 +389,9 @@ function getDataExcel(req, res, next) {
 
   let wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
   var buf = new ArrayBuffer(wbout.length); //convert s to arrayBuffer
+  var view = new Uint8Array(buf); //create uint8array as viewer
+  for (var i = 0; i < wbout.length; i++) view[i] = wbout.charCodeAt(i) & 0xff; //convert to octet
+
   var blob = new Blob([buf], { type: "application/octet-stream" });
 
   saveAs(blob, "panss.xlsx");
