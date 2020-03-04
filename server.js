@@ -331,7 +331,6 @@ app.post('/changePassword', checkAuthenticated, async (req, res) => {
 });
 
 app.delete('/logout', (req, res) => {
-  loggedInTokens.delete(req.session.ddtoken);
   req.logOut();
   res.redirect('/login');
 });
