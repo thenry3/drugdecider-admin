@@ -199,6 +199,7 @@ function collectAndSendData() {
 
 down_but.addEventListener('click', getdbdata);
 function getdbdata() {
+  let csv = '';
   var xhr = new XMLHttpRequest();
   xhr.open('GET', down_data, false);
   xhr.setRequestHeader('Content-Type', 'application/json');
@@ -208,4 +209,9 @@ function getdbdata() {
     }
   };
   xhr.send();
+  var hiddenLink = document.createElement('a');
+  hiddenLink.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+  hiddenLink.target = '_blank';
+  hiddenLink.download = 'wsAssignments.csv';
+  hiddenLink.click();
 }
