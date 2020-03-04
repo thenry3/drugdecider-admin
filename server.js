@@ -286,7 +286,16 @@ app.post('/updatedata', (req, res) => {
     update_drug_data(req.body.data);
     res.send('Success');
   } else {
-    res.send('Auth Failure');
+    res.status(401).send('Auth Failure');
+  }
+});
+
+app.get('/revalidatecookie', (req, res) => {
+  if (verify_cookie_auth(req.body.cookie)) {
+    const new_cookie = create_cookie(req.body.cookie.details.username);
+    res.send({ cookie: new_cookie });
+  } else {
+    res.status(401).send('Auth Failure');
   }
 });
 

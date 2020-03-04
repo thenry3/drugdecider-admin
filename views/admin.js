@@ -1,6 +1,7 @@
 const drug_info = 'https://api.drugdecider.com/api/v1/druginfo/';
 const se_update = 'https://admin.drugdecider.com/updatedata/';
 const down_data = 'https://admin.drugdecider.com/getexcel/';
+const cookie_update_api = 'https://admin.drugdecider.com/revalidatecookie';
 
 var old_info = {};
 var xhr = new XMLHttpRequest();
@@ -198,6 +199,9 @@ function collectAndSendData() {
     if (xhr.readyState === 4 && xhr.status === 200) {
       alert('Done!');
       location.reload();
+    } else if (xhr.readyState === 4 && xhr.status === 401) {
+      alert('Your login session has timed out. Please log in again!');
+      location.replace('/logout');
     }
   };
   xhr.send(
@@ -226,4 +230,21 @@ function getdbdata() {
   hiddenLink.target = '_blank';
   hiddenLink.download = 'wsAssignments.csv';
   hiddenLink.click();
+}
+
+var cookieupdated = setInterval(update_cookie, 1000 * 60 * 30);
+
+function update_cookie() {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', cookie_update_api, false);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      cookie = xhr.response.cookie;
+    } else if (xhr.readyState === 4 && xhr.status === 401) {
+      alert('An error has occured, please log back in!');
+      location.replace('/logout');
+    }
+  };
+  xhr.send({ cookie });
 }
