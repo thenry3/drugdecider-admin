@@ -208,7 +208,7 @@ function getdbdata() {
   xhr.setRequestHeader("Content-Type", "application/json");
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4 && xhr.status === 200) {
-      csv = JSON.parse(xhr.responseText);
+      csv = JSON.parse(xhr.response.data);
     }
   };
   xhr.send();
