@@ -10,7 +10,7 @@ async function callCSV() {
   var hiddenLink = document.createElement("a");
   hiddenLink.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
   hiddenLink.target = "_blank";
-  hiddenLink.download = "wsAssignments.csv";
+  hiddenLink.download = "patientdata.csv";
   hiddenLink.click();
 }
 
