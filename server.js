@@ -8,6 +8,11 @@ const bcrypt = require('bcrypt');
 const flash = require('express-flash');
 const session = require('express-session');
 const methodOverride = require('method-override');
+const writeFileAtomic = require('write-file-atomic');
+const path = require('path');
+
+// Add some body parser middleware
+app.use(express.json());
 
 app.set('view-engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
@@ -77,10 +82,10 @@ passport.use(
   })
 );
 
-app.get('/', checkAuthenticated, (req, res) => {
+app.get('/', checkNotAuthenticated, (req, res) => {
   req.flash('info_i', req.session.messagei);
   req.session.messagei = '';
-  res.render('index.ejs', { name: req.user.username });
+  res.render('index.ejs', { name: 'req.user.username' });
 });
 
 app.post(
@@ -99,6 +104,10 @@ app.get('/login', checkNotAuthenticated, (req, res) => {
 
 app.get('/changePassword', checkAuthenticated, (req, res) => {
   res.render('change-password.ejs', { message: req.session.message });
+});
+
+app.post('/updatedata', checkNotAuthenticated, (req, res) => {
+  update_drug_data(req.body);
 });
 
 app.post('/changePassword', checkAuthenticated, async (req, res) => {
@@ -151,6 +160,16 @@ function checkNotAuthenticated(req, res, next) {
     return res.redirect('/');
   }
   next();
+}
+
+function update_drug_data(data) {
+  writeFileAtomic(
+    path.join(__dirname, '..', 'api.drugdecider.com', 'data', 'data.json'),
+    JSON.stringify(data),
+    err => {
+      if (err) throw err;
+    }
+  );
 }
 
 app.listen(3000);

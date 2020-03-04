@@ -1,10 +1,185 @@
-<% if (messages.info_i) { %>
-    <%= messages.info_i%>
-<% } %>
-<h1>hi <%= name %></h1>
-<form action="/logout?_method=DELETE" method="POST">
-    <button type="submit">Logout</button>
-</form>
-<form action="/changePassword" method="POST">
-    <button type="submit">Change Password</button>
-</form>
+<!DOCTYPE html>
+<!--[if lte IE 6]><html class="preIE7 preIE8 preIE9"><![endif]-->
+<!--[if IE 7]><html class="preIE8 preIE9"><![endif]-->
+<!--[if IE 8]><html class="preIE9"><![endif]-->
+<!--[if gte IE 9]><!-->
+<html>
+<!--<![endif]-->
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Drug Decider - Admin</title>
+  <meta name="author" content="Drug Decider">
+  <meta name="description" content="Drug Decider Admin Console">
+  <meta name="keywords" content="keywords,here">
+  <link rel="stylesheet" href="index.css">
+  
+  <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Drug Decider - Admin Console</h1>
+    <% if (messages.info_i) { %>
+        <p><%= messages.info_i%></p>
+    <% } %>
+
+    <div class="user-actions">
+      <form action="/logout?_method=DELETE" method="POST">
+        <button type="submit">Logout</button>
+      </form>
+      <form action="/changePassword" method="POST">
+        <button type="submit">Change Password</button>
+      </form>
+    </div>
+
+    <div class="admincontainer">
+      <div class="formdownload">
+        <h2>Form Data</h2>
+        <button type="button" id="down_but">Click to Download Collected Data</button>
+      </div>
+      <div class="sideeffects">
+        <h2>Side Effects</h2>
+
+        <div class="editor">
+          <div class="editor-left">
+            <p>Paliperidone</p>
+          </div>
+          <div class="editor-right">
+            <h3>Drug Name</h3>
+            <div>
+              <input type="checkbox" id="paliperidone_lock"></input>
+              Change data for this drug
+            </div>
+            <div class="ln">
+              Link <input type="text" id="paliperidone_link" value="" disabled>
+            </div>  
+            <div class="boxes">
+              <div class="ta-div">
+                <p>Description</p>
+                <textarea  id="paliperidone_d" disabled></textarea>
+              </div>
+              <div class="ta-div">
+                <p>Side Effects</p>
+                <textarea  id="paliperidone_s" disabled></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+          <div class="editor">
+            <div class="editor-left">
+              <p>Olanzapine</p>
+            </div>
+            <div class="editor-right">
+              <h3>Olanzapine</h3>
+              <div>
+                <input type="checkbox" id="olanzapine_lock"></input>
+                Change data for this drug
+              </div>
+              <div class="ln">
+                Link <input type="text" id="olanzapine_link" value="" disabled>
+              </div>
+              <div class="boxes">
+                <div class="ta-div">
+                  <p>Description</p>
+                  <textarea  id="olanzapine_d" disabled></textarea>
+                </div>
+                <div class="ta-div">
+                  <p>Side Effects</p>
+                  <textarea  id="olanzapine_s" disabled></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="editor">
+            <div class="editor-left">
+              <p>Quetiapine</p>
+            </div>
+            <div class="editor-right">
+              <h3>Quetiapine</h3>              
+              <div>
+                <input type="checkbox" id="quetiapine_lock"></input>
+                Change data for this drug
+              </div>
+              <div class="ln">
+                Link <input type="text" id="quetiapine_link" value="" disabled>
+              </div>
+              <div class="boxes">
+                <div class="ta-div">
+                  <p>Description</p>
+                  <textarea  id="quetiapine_d" disabled></textarea>
+                </div>
+                <div class="ta-div">
+                  <p>Side Effects</p>
+                  <textarea  id="quetiapine_s" disabled></textarea>
+                </div>
+              </div>             
+            </div>
+          </div>
+
+          <div class="editor">
+            <div class="editor-left">
+              <p>Risperdal Consta</p>
+            </div>
+            <div class="editor-right">
+              <h3>Risperdal Consta</h3>
+              <div>
+                <input type="checkbox" id="risperdal_consta_lock"></input>
+                Change data for this drug
+              </div>
+              <div class="ln">
+                Link <input type="text" id="risperdal_consta_link" value="" disabled>
+              </div>
+              <div class="boxes">
+                <div class="ta-div">
+                  <p>Description</p>
+                  <textarea  id="risperdal_consta_d" disabled></textarea>
+                </div>
+                <div class="ta-div">
+                  <p>Side Effects</p>
+                  <textarea  id="risperdal_consta_s" disabled></textarea>
+                </div>
+              </div>              
+            </div>
+          </div>
+
+          <div class="editor">
+            <div class="editor-left">
+              <p>Paliperidone Palmitate</p>
+            </div>
+            <div class="editor-right">
+              <h3>Paliperidone Palmitate</h3>
+              <div>
+                <input type="checkbox" id="paliperidone_palmitate_lock"></input>
+                Change data for this drug
+              </div>
+              <div class="ln">
+                Link <input type="text" id="paliperidone_palmitate_link" value="" disabled>
+              </div>
+              <div class="boxes">
+                <div class="ta-div">
+                  <p>Description</p>
+                  <textarea  id="paliperidone_palmitate_d" disabled></textarea>
+                </div>
+                <div class="ta-div">
+                  <p>Side Effects</p>
+                  <textarea  id="paliperidone_palmitate_s" disabled></textarea>
+                </div>
+              </div>              
+            </div>
+          </div>
+
+        <button type="button" id="submit_data">Update Side Effects</button>
+      </div>
+    </div>
+
+  </div>
+
+ 
+</body>
+<script src="admin.js"></script>
+</html>
