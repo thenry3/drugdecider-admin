@@ -29,12 +29,12 @@ app.use(
         'https://api.drugdecider.com/api/v1/druginfo',
         'https://admin.drugdecider.com/updatedata',
       ],
-      connectSrc:[
-          "'self'",
-          'https://api.drugdecider.com',
-          'https://api.drugdecider.com/api/v1/druginfo',
-          'https://admin.drugdecider.com/updatedata',
-      ]      
+      connectSrc: [
+        "'self'",
+        'https://api.drugdecider.com',
+        'https://api.drugdecider.com/api/v1/druginfo',
+        'https://admin.drugdecider.com/updatedata',
+      ],
       styleSrc: [
         "'self'",
         "'unsafe-inline'",
