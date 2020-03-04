@@ -37,7 +37,7 @@ const UserDetail = new Schema({
   username: String,
   password: String,
 });
-const UserDetails = mongoose.model('user', UserDetail, 'user');
+const UserDetails = mongoose.model('user', UserDetail, 'users');
 
 /*  PASSPORT SETUP  */
 
