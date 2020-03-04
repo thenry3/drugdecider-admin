@@ -4,7 +4,7 @@ const down_data = 'https://admin.drugdecider.com/getexcel/';
 
 var old_info = {};
 var xhr = new XMLHttpRequest();
-xhr.open('GET', drug_info, true);
+xhr.open('GET', drug_info, false);
 xhr.setRequestHeader('Content-Type', 'application/json');
 xhr.onreadystatechange = function() {
   if (xhr.readyState === 4 && xhr.status === 200) {
@@ -199,11 +199,11 @@ down_but.addEventListener('click', getdbdata);
 function getdbdata() {
   let csv = '';
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', down_data, true);
+  xhr.open('GET', down_data, false);
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4 && xhr.status === 200) {
-      old_info = JSON.parse(xhr.responseText);
+      csv = JSON.parse(xhr.responseText);
     }
   };
   xhr.send();
