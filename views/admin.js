@@ -141,6 +141,14 @@ paliperidone_palmitate_lock.addEventListener('change', event => {
   }
 });
 
+///
+var cookie = '';
+if (sessionStorage.getItem('dd_HMAC')) {
+  cookie = sessionStorage.getItem('dd_HMAC');
+} else {
+  cookie = dd_HMAC_cookie;
+}
+
 ///////////////////////////////////////////////// Data Sumbission /////////////////////////////////////////////////
 
 submit_but.addEventListener('click', collectAndSendData);
@@ -194,7 +202,7 @@ function collectAndSendData() {
   };
   xhr.send(
     JSON.stringify({
-      token: ddtoken,
+      cookie,
       data: new_data,
     })
   );

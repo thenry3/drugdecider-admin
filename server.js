@@ -13,7 +13,45 @@ const path = require('path');
 const csp = require('helmet-csp');
 const crypto = require('crypto');
 
-var loggedInTokens = new Set();
+const sk = crypto.randomBytes(256).toString('hex');
+const session_secret = crypto.randomBytes(512).toString('hex');
+const hashing_algo = 'sha256';
+const EXPIRATION_TIME_MILLI = 1000 * 60 * /*Number of minutes*/ 60;
+
+function create_cookie(uname) {
+  const login_time = Date.now();
+  var cookie_vars = {
+    uname: uname,
+    login_time,
+    time_of_kil: login_time + EXPIRATION_TIME_MILLI,
+  };
+  var cookie_vars_str = JSON.stringify(cookie_vars);
+  cookie = {
+    details: cookie_vars,
+    hash: crypto
+      .createHmac(hashing_algo, sk)
+      .update(cookie_vars_str)
+      .digest('hex'),
+  };
+  return cookie;
+}
+
+function verify_cookie_auth(cookie) {
+  calced_hash = crypto
+    .createHmac(hashing_algo, sk)
+    .update(JSON.stringify(cookie.details))
+    .digest('hex');
+  const cur_time = Date.now();
+  if (
+    cookie.hash === calced_hash &&
+    cookie.details.login_time <= cur_time &&
+    cur_time <= cookie.details.time_of_kil
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 app.use(
   csp({
@@ -54,7 +92,12 @@ app.use(
         'https://api.drugdecider.com',
         'https://api.drugdecider.com/api/v1/druginfo',
       ],
-      sandbox: ['allow-forms', 'allow-scripts', 'allow-modals'],
+      sandbox: [
+        'allow-forms',
+        'allow-scripts',
+        'allow-modals',
+        'allow-same-origin',
+      ],
       reportUri: '/report-violation',
       objectSrc: ["'none'"],
       upgradeInsecureRequests: true,
@@ -92,7 +135,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(flash());
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: session_secret,
     saveUninitialized: false,
     resave: false,
   })
@@ -158,14 +201,12 @@ passport.use(
 app.get('/', checkAuthenticated, (req, res) => {
   req.flash('info_i', req.session.messagei);
   req.session.messagei = '';
-  if (!req.session.ddtoken) {
-    buf = crypto.randomBytes(256);
-    req.session.ddtoken = buf.toString('hex');
-    loggedInTokens.add(req.session.ddtoken);
+  if (!req.session.dd_HMAC_cookie) {
+    req.session.dd_HMAC_cookie = create_cookie(req.user.username);
   }
   res.render('index.ejs', {
     name: req.user.username,
-    ddtoken: req.session.ddtoken,
+    dd_HMAC_cookie: JSON.stringify(req.session.dd_HMAC_cookie),
   });
 });
 
@@ -188,11 +229,12 @@ app.get('/changePassword', checkAuthenticated, (req, res) => {
 });
 
 app.post('/updatedata', (req, res) => {
-  if (loggedInTokens.has(req.body.token)) {
+  if (verify_cookie_auth(req.body.cookie)) {
     update_drug_data(req.body.data);
     res.send('Success');
+  } else {
+    res.send('Auth Failure');
   }
-  res.send('Auth Failure');
 });
 
 app.post('/changePassword', checkAuthenticated, async (req, res) => {
