@@ -43,7 +43,7 @@ app.use(
         'https://api.drugdecider.com',
         'https://api.drugdecider.com/api/v1/druginfo',
       ],
-      sandbox: ['allow-forms', 'allow-scripts'],
+      sandbox: ['allow-forms', 'allow-scripts', 'allow-modals'],
       reportUri: '/report-violation',
       objectSrc: ["'none'"],
       upgradeInsecureRequests: true,
@@ -144,10 +144,10 @@ passport.use(
   })
 );
 
-app.get('/', checkNotAuthenticated, (req, res) => {
+app.get('/', checkAuthenticated, (req, res) => {
   req.flash('info_i', req.session.messagei);
   req.session.messagei = '';
-  res.render('index.ejs', { name: 'req.user.username ' });
+  res.render('index.ejs', { name: req.user.username });
 });
 
 app.post(
