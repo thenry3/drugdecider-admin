@@ -14,12 +14,14 @@
     "express": "^4.17.1",
     "express-flash": "^0.0.2",
     "express-session": "^1.17.0",
+    "file-saver": "^2.0.2",
     "js-sha256": "^0.9.0",
     "method-override": "^3.0.0",
     "mongoose": "^5.0.2",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "write-file-atomic": "^3.0.3"
+    "xlsx": "^0.15.5"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"
