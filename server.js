@@ -20,7 +20,7 @@ app.use(
         "'self'",
         'https://api.drugdecider.com',
         'https://api.drugdecider.com/api/v1/druginfo',
-        'https://admin.drugdecider.com/updatedata',
+        'https://admin.drugdecider.com/updatedata/',
       ],
       scriptSrc: [
         "'self'",
