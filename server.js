@@ -153,6 +153,59 @@ const UserDetail = new Schema({
   username: String,
   password: String,
 });
+
+const SubmissionSchema = new mongoose.Schema({
+  info: { type: mongoose.Schema.Types.ObjectId, ref: 'UserInfo' },
+  PANSS: { type: mongoose.Schema.Types.ObjectId, ref: 'PANSS' },
+  userScores: { type: mongoose.Schema.Types.ObjectId, ref: 'userScores' },
+});
+
+const ScoresSchema = new mongoose.Schema({
+  activeSocialAvoidance: { type: Number, required: true },
+  anxiety: { type: Number, required: true },
+  bluntedAffect: { type: Number, required: true },
+  conceptualDisorganisation: { type: Number, required: true },
+  delusions: { type: Number, required: true },
+  depression: { type: Number, required: true },
+  difficultyInAbstractThinking: { type: Number, required: true },
+  disorientation: { type: Number, required: true },
+  disturbanceOfVolition: { type: Number, required: true },
+  emotionalWithdrawal: { type: Number, required: true },
+  excitement: { type: Number, required: true },
+  grandiosity: { type: Number, required: true },
+  guiltFeelings: { type: Number, required: true },
+  hallucinatoryBehaviour: { type: Number, required: true },
+  hostility: { type: Number, required: true },
+  lackOfJudgementAndInsight: { type: Number, required: true },
+  lackOfSpontaneityAndFlowOfConversation: { type: Number, required: true },
+  mannerismsAndPosturing: { type: Number, required: true },
+  motorRetardation: { type: Number, required: true },
+  passiveApatheticSocialWithdrawal: { type: Number, required: true },
+  poorAttention: { type: Number, required: true },
+  poorImpulseControl: { type: Number, required: true },
+  poorRapport: { type: Number, required: true },
+  preoccupation: { type: Number, required: true },
+  somaticConcern: { type: Number, required: true },
+  stereotypedThinking: { type: Number, required: true },
+  suspiciousnessPersecution: { type: Number, required: true },
+  tension: { type: Number, required: true },
+  uncooperativeness: { type: Number, required: true },
+  unusualThoughtContent: { type: Number, required: true },
+});
+
+const InfoSchema = new mongoose.Schema({
+  bp: { type: Number, required: true },
+  BMI: { type: Number, required: true },
+  DX: { type: String, required: true },
+  DXAge: { type: Number, required: true },
+  country: { type: String, required: true },
+  age: { type: Number, required: true },
+  gender: { type: String, required: true, enum: ['M', 'F'] },
+});
+
+let scoresMap = mongoose.model('scores', ScoresSchema);
+let infoMap = mongoose.model('info', InfoSchema);
+let submissionMap = mongoose.model('submission', SubmissionSchema);
 const UserDetails = mongoose.model('user', UserDetail, 'users');
 
 /*  PASSPORT SETUP  */
@@ -237,6 +290,13 @@ app.post('/updatedata', (req, res) => {
   }
 });
 
+app.get('/getexcel', (req, res) => {
+  if (loggedInTokens.has(req.body.token)) {
+    res.send({ data: getDataExcel });
+  }
+  res.send({ data: 'Auth Failure' });
+});
+
 app.post('/changePassword', checkAuthenticated, async (req, res) => {
   try {
     if (await bcrypt.compare(req.body.oldPassword, req.user.password)) {
@@ -298,6 +358,171 @@ function update_drug_data(data) {
       if (err) throw err;
     }
   );
+}
+
+async function retrieveData() {
+  var submissionCursor = await submissionMap.find();
+  if (submissionCursor == null) return [];
+  return submissionCursor.map(async submission => {
+    var infoJSON = await this.infoMap.findById(submission.info);
+    var PANSSJSON = await this.scoresMap.findById(submission.PANSS);
+    var userScoresJSON = await this.scoresMap.findById(submission.userScores);
+    return {
+      info: JSON.stringify(infoJSON),
+      PANSS_scores: JSON.stringify(PANSSJSON),
+      user_scores: JSON.stringify(userScoresJSON),
+    };
+  });
+}
+
+function getDataExcel(req, res, next) {
+  var data = retrieveData();
+  let arr = [
+    [
+      'Gender',
+      'Age',
+      'Country',
+      'DXAge',
+      'DX',
+      'BMI',
+      'bp',
+      'PANSS_ACTIVESOCIALAVOIDANCE',
+      'PANSS_ANXIETY',
+      'PANSS_BLUNTEDAFFECT',
+      'PANSS_CONCEPTUALDISORGANISATION',
+      'PANSS_DELUSIONS',
+      'PANSS_DEPRESSION',
+      'PANSS_DIFFICULTYINABSTRACTTHINKING',
+      'PANSS_DISORIENTATION',
+      'PANSS_DISTURBANCEOFVOLITION',
+      'PANSS_EMOTIONALWITHDRAWAL',
+      'PANSS_EXCITEMENT',
+      'PANSS_GRANDIOSITY',
+      'PANSS_GUILTFEELINGS',
+      'PANSS_HALLUCINATORYBEHAVIOUR',
+      'PANSS_HOSTILITY',
+      'PANSS_LACKOFJUDGEMENTANDINSIGHT',
+      'PANSS_LACKOFSPONTANEITYANDFLOWOFCONVERSATION',
+      'PANSS_MANNERISMSANDPOSTURING',
+      'PANSS_MOTORRETARDATION',
+      'PANSS_PASSIVEAPATHETICSOCIALWITHDRAWAL',
+      'PANSS_POORATTENTION',
+      'PANSS_POORIMPULSECONTROL',
+      'PANSS_POORRAPPORT',
+      'PANSS_PREOCCUPATION',
+      'PANSS_SOMATICCONCERN',
+      'PANSS_STEREOTYPEDTHINKING',
+      'PANSS_SUSPICIOUSNESSPERSECUTION',
+      'PANSS_TENSION',
+      'PANSS_UNCOOPERATIVENESS',
+      'PANSS_UNUSUALTHOUGHTCONTENT',
+      'USER_ACTIVESOCIALAVOIDANCE',
+      'USER_ANXIETY',
+      'USER_BLUNTEDAFFECT',
+      'USER_CONCEPTUALDISORGANISATION',
+      'USER_DELUSIONS',
+      'USER_DEPRESSION',
+      'USER_DIFFICULTYINABSTRACTTHINKING',
+      'USER_DISORIENTATION',
+      'USER_DISTURBANCEOFVOLITION',
+      'USER_EMOTIONALWITHDRAWAL',
+      'USER_EXCITEMENT',
+      'USER_GRANDIOSITY',
+      'USER_GUILTFEELINGS',
+      'USER_HALLUCINATORYBEHAVIOUR',
+      'USER_HOSTILITY',
+      'USER_LACKOFJUDGEMENTANDINSIGHT',
+      'USER_LACKOFSPONTANEITYANDFLOWOFCONVERSATION',
+      'USER_MANNERISMSANDPOSTURING',
+      'USER_MOTORRETARDATION',
+      'USER_PASSIVEAPATHETICSOCIALWITHDRAWAL',
+      'USER_POORATTENTION',
+      'USER_POORIMPULSECONTROL',
+      'USER_POORRAPPORT',
+      'USER_PREOCCUPATION',
+      'USER_SOMATICCONCERN',
+      'USER_STEREOTYPEDTHINKING',
+      'USER_SUSPICIOUSNESSPERSECUTION',
+      'USER_TENSION',
+      'USER_UNCOOPERATIVENESS',
+      'USER_UNUSUALTHOUGHTCONTENT',
+    ],
+  ];
+  let patients = [];
+  for (let i = 0; i < data.length; i++) {
+    let patient = data[i];
+    let temparr = [];
+    temparr.push(patient.info.gender);
+    temparr.push(patient.info.age);
+    temparr.push(patient.info.country);
+    temparr.push(patient.info.DXAge);
+    temparr.push(patient.info.DX);
+    temparr.push(patient.info.BMI);
+    temparr.push(patient.info.bp);
+    temparr.push(patient.PANSS_scores.activeSocialAvoidance);
+    temparr.push(patient.PANSS_scores.anxiety);
+    temparr.push(patient.PANSS_scores.bluntedAffect);
+    temparr.push(patient.PANSS_scores.conceptualDisorganisation);
+    temparr.push(patient.PANSS_scores.delusions);
+    temparr.push(patient.PANSS_scores.depression);
+    temparr.push(patient.PANSS_scores.difficultyInAbstractThinking);
+    temparr.push(patient.PANSS_scores.disorientation);
+    temparr.push(patient.PANSS_scores.disturbanceOfVolition);
+    temparr.push(patient.PANSS_scores.emotionalWithdrawal);
+    temparr.push(patient.PANSS_scores.excitement);
+    temparr.push(patient.PANSS_scores.grandiosity);
+    temparr.push(patient.PANSS_scores.guiltFeelings);
+    temparr.push(patient.PANSS_scores.hallucinatoryBehaviour);
+    temparr.push(patient.PANSS_scores.hostility);
+    temparr.push(patient.PANSS_scores.lackOfJudgementAndInsight);
+    temparr.push(patient.PANSS_scores.lackOfSpontaneityAndFlowOfConversation);
+    temparr.push(patient.PANSS_scores.mannerismsAndPosturing);
+    temparr.push(patient.PANSS_scores.motorRetardation);
+    temparr.push(patient.PANSS_scores.passiveApatheticSocialWithdrawal);
+    temparr.push(patient.PANSS_scores.poorAttention);
+    temparr.push(patient.PANSS_scores.poorImpulseControl);
+    temparr.push(patient.PANSS_scores.poorRapport);
+    temparr.push(patient.PANSS_scores.preoccupation);
+    temparr.push(patient.PANSS_scores.somaticConcern);
+    temparr.push(patient.PANSS_scores.stereotypedThinking);
+    temparr.push(patient.PANSS_scores.suspiciousnessPersecution);
+    temparr.push(patient.PANSS_scores.tension);
+    temparr.push(patient.PANSS_scores.uncooperativeness);
+    temparr.push(patient.PANSS_scores.unusualThoughtContent);
+    temparr.push(patient.user_scores.activeSocialAvoidance);
+    temparr.push(patient.user_scores.anxiety);
+    temparr.push(patient.user_scores.bluntedAffect);
+    temparr.push(patient.user_scores.conceptualDisorganisation);
+    temparr.push(patient.user_scores.delusions);
+    temparr.push(patient.user_scores.depression);
+    temparr.push(patient.user_scores.difficultyInAbstractThinking);
+    temparr.push(patient.user_scores.disorientation);
+    temparr.push(patient.user_scores.disturbanceOfVolition);
+    temparr.push(patient.user_scores.emotionalWithdrawal);
+    temparr.push(patient.user_scores.excitement);
+    temparr.push(patient.user_scores.grandiosity);
+    temparr.push(patient.user_scores.guiltFeelings);
+    temparr.push(patient.user_scores.hallucinatoryBehaviour);
+    temparr.push(patient.user_scores.hostility);
+    temparr.push(patient.user_scores.lackOfJudgementAndInsight);
+    temparr.push(patient.user_scores.lackOfSpontaneityAndFlowOfConversation);
+    temparr.push(patient.user_scores.mannerismsAndPosturing);
+    temparr.push(patient.user_scores.motorRetardation);
+    temparr.push(patient.user_scores.passiveApatheticSocialWithdrawal);
+    temparr.push(patient.user_scores.poorAttention);
+    temparr.push(patient.user_scores.poorImpulseControl);
+    temparr.push(patient.user_scores.poorRapport);
+    temparr.push(patient.user_scores.preoccupation);
+    temparr.push(patient.user_scores.somaticConcern);
+    temparr.push(patient.user_scores.stereotypedThinking);
+    temparr.push(patient.user_scores.suspiciousnessPersecution);
+    temparr.push(patient.user_scores.tension);
+    temparr.push(patient.user_scores.uncooperativeness);
+    temparr.push(patient.user_scores.unusualThoughtContent);
+    patients.push(temparr);
+  }
+  arr.concat(patients);
+  return arr;
 }
 
 app.listen(3000);

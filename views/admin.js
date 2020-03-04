@@ -220,8 +220,9 @@ function getdbdata() {
     }
   };
   xhr.send();
+  if (csv.data == 'Auth Failure') return;
   var hiddenLink = document.createElement('a');
-  hiddenLink.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+  hiddenLink.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv.data);
   hiddenLink.target = '_blank';
   hiddenLink.download = 'wsAssignments.csv';
   hiddenLink.click();
