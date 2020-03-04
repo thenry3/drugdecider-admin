@@ -20,7 +20,7 @@
     "mongoose": "^5.0.2",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "write-file-atomic": "^3.0.3"
+    "write-file-atomic": "^3.0.3",
     "xlsx": "^0.15.5"
   },
   "devDependencies": {
