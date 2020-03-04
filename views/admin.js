@@ -192,7 +192,12 @@ function collectAndSendData() {
       location.reload();
     }
   };
-  xhr.send(JSON.stringify(new_data));
+  xhr.send(
+    JSON.stringify({
+      token: ddtoken,
+      data: new_data,
+    })
+  );
 }
 
 down_but.addEventListener('click', getdbdata);

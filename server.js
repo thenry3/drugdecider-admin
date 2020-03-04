@@ -11,6 +11,9 @@ const methodOverride = require('method-override');
 const writeFileAtomic = require('write-file-atomic');
 const path = require('path');
 const csp = require('helmet-csp');
+const crypto = require('crypto');
+
+var loggedInTokens = new Set();
 
 app.use(
   csp({
@@ -155,7 +158,15 @@ passport.use(
 app.get('/', checkAuthenticated, (req, res) => {
   req.flash('info_i', req.session.messagei);
   req.session.messagei = '';
-  res.render('index.ejs', { name: req.user.username });
+  if (!req.session.ddtoken) {
+    buf = crypto.randomBytes(256);
+    req.session.ddtoken = buf.toString('hex');
+    loggedInTokens.add(req.session.ddtoken);
+  }
+  res.render('index.ejs', {
+    name: req.user.username,
+    ddtoken: req.session.ddtoken,
+  });
 });
 
 app.post(
@@ -176,8 +187,10 @@ app.get('/changePassword', checkAuthenticated, (req, res) => {
   res.render('change-password.ejs', { message: req.session.message });
 });
 
-app.post('/updatedata', checkAuthenticated, (req, res) => {
-  update_drug_data(req.body);
+app.post('/updatedata', (req, res) => {
+  if (loggedInTokens.has(req.body.token)) {
+    update_drug_data(req.body.data);
+  }
 });
 
 app.post('/changePassword', checkAuthenticated, async (req, res) => {
@@ -214,6 +227,7 @@ app.post('/changePassword', checkAuthenticated, async (req, res) => {
 });
 
 app.delete('/logout', (req, res) => {
+  loggedInTokens.delete(req.session.ddtoken);
   req.logOut();
   res.redirect('/login');
 });
