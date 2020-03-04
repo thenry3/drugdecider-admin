@@ -190,7 +190,9 @@ app.get('/changePassword', checkAuthenticated, (req, res) => {
 app.post('/updatedata', (req, res) => {
   if (loggedInTokens.has(req.body.token)) {
     update_drug_data(req.body.data);
+    res.send('Success');
   }
+  res.send('Auth Failure');
 });
 
 app.post('/changePassword', checkAuthenticated, async (req, res) => {
