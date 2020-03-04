@@ -106,7 +106,7 @@ app.get('/changePassword', checkAuthenticated, (req, res) => {
   res.render('change-password.ejs', { message: req.session.message });
 });
 
-app.post('/updatedata', checkNotAuthenticated, (req, res) => {
+app.post('/updatedata', checkAuthenticated, (req, res) => {
   update_drug_data(req.body);
 });
 
