@@ -144,10 +144,10 @@ passport.use(
   })
 );
 
-app.get('/', checkAuthenticated, (req, res) => {
+app.get('/', checkNotAuthenticated, (req, res) => {
   req.flash('info_i', req.session.messagei);
   req.session.messagei = '';
-  res.render('index.ejs', { name: req.user.username });
+  res.render('index.ejs', { name: 'req.user.username ' });
 });
 
 app.post(
