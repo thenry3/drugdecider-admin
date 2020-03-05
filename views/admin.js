@@ -199,7 +199,10 @@ function collectAndSendData() {
     if (xhr.readyState === 4 && xhr.status === 200) {
       alert('Done!');
       location.reload();
-    } else if (xhr.readyState === 4 && xhr.status === 401) {
+    } else if (
+      xhr.readyState === 4 &&
+      (xhr.status === 401 || xhr.status === 500)
+    ) {
       alert('Your login session has timed out. Please log in again!');
       logout_user();
     }
@@ -221,6 +224,12 @@ function getdbdata() {
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4 && xhr.status === 200) {
       csv = JSON.parse(xhr.response.data);
+    } else if (
+      xhr.readyState === 4 &&
+      (xhr.status === 401 || xhr.status === 500)
+    ) {
+      alert('An error has occured, please log back in!');
+      logout_user();
     }
   };
   xhr.send(
@@ -228,7 +237,6 @@ function getdbdata() {
       cookie,
     })
   );
-  if (csv.data == 'Auth Failure') return;
   var hiddenLink = document.createElement('a');
   hiddenLink.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv.data);
   hiddenLink.target = '_blank';
@@ -245,7 +253,10 @@ function update_cookie() {
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4 && xhr.status === 200) {
       cookie = JSON.parse(xhr.responseText).cookie;
-    } else if (xhr.readyState === 4 && xhr.status === 401) {
+    } else if (
+      xhr.readyState === 4 &&
+      (xhr.status === 401 || xhr.status === 500)
+    ) {
       alert('An error has occured, please log back in!');
       logout_user();
     }
