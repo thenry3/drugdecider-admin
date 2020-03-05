@@ -301,7 +301,8 @@ app.post('/revalidatecookie', (req, res) => {
 
 app.post('/getexcel', (req, res) => {
   if (verify_cookie_auth(req.body.cookie)) {
-    res.send({ data: getDataExcel });
+    const data = getDataExcel();
+    res.send({ data });
   } else {
     res.send({ data: 'Auth Failure' });
   }
@@ -384,7 +385,7 @@ async function retrieveData() {
   });
 }
 
-function getDataExcel(req, res, next) {
+function getDataExcel() {
   var data = retrieveData();
   let arr = [
     [
@@ -531,7 +532,7 @@ function getDataExcel(req, res, next) {
     patients.push(temparr);
   }
   arr.concat(patients);
-  return arr;
+  return { data: arr };
 }
 
 app.listen(3000);
