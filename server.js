@@ -361,6 +361,11 @@ function checkNotAuthenticated(req, res, next) {
 }
 
 function update_drug_data(data) {
+  for (var prop in data) {
+    if (Object.prototype.hasOwnProperty.call(data, prop)) {
+      data[prop].side_effects = data[prop].side_effects.split(/\r?\n/);
+    }
+  }
   writeFileAtomic(
     path.join(__dirname, '..', 'api.drugdecider.com', 'data', 'data.json'),
     JSON.stringify(data),

@@ -63,12 +63,31 @@ paliperidone_palmitate_link.setAttribute(
 );
 
 /* SET DESCRIPTIONS */
-paliperidone_d.innerHTML = old_info['paliperidone'].description;
-olanzapine_d.innerHTML = old_info['olanzapine'].description;
-quetiapine_d.innerHTML = old_info['quetiapine'].description;
-risperdal_consta_d.innerHTML = old_info['risperdal_consta'].description;
-paliperidone_palmitate_d.innerHTML =
-  old_info['paliperidone_palmitate'].description;
+function generate_se_from_list(se_list) {
+  var str = '';
+  for (var i = 0; i < se_list.length; ++i) {
+    str += se_list[i] + '\n';
+  }
+  if (str.slice(-1) === '\n') {
+    str = str.substring(0, str.length - 1);
+  }
+  return str;
+}
+paliperidone_d.innerHTML = generate_se_from_list(
+  old_info['paliperidone'].description
+);
+olanzapine_d.innerHTML = generate_se_from_list(
+  old_info['olanzapine'].description
+);
+quetiapine_d.innerHTML = generate_se_from_list(
+  old_info['quetiapine'].description
+);
+risperdal_consta_d.innerHTML = ogenerate_se_from_list(
+  ld_info['risperdal_consta'].description
+);
+paliperidone_palmitate_d.innerHTML = generate_se_from_list(
+  old_info['paliperidone_palmitate'].description
+);
 
 /* SET SIDE EFFECTS */
 paliperidone_s.innerHTML = old_info['paliperidone'].side_effects;
