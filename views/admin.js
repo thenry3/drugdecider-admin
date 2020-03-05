@@ -74,7 +74,7 @@ paliperidone_palmitate_d.innerHTML =
 function generate_se_from_list(se_list) {
   var str = '';
   for (var i = 0; i < se_list.length; ++i) {
-    str += se_list[i] + '\n';
+    if (se_list[i] != '') str += se_list[i] + '\n';
   }
   if (str.slice(-1) === '\n') {
     str = str.substring(0, str.length - 1);
