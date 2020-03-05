@@ -201,7 +201,7 @@ function collectAndSendData() {
       location.reload();
     } else if (xhr.readyState === 4 && xhr.status === 401) {
       alert('Your login session has timed out. Please log in again!');
-      location.replace('/logout');
+      logout_user();
     }
   };
   xhr.send(
@@ -216,14 +216,18 @@ down_but.addEventListener('click', getdbdata);
 function getdbdata() {
   let csv = '';
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', down_data, false);
+  xhr.open('POST', down_data, false);
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4 && xhr.status === 200) {
       csv = JSON.parse(xhr.response.data);
     }
   };
-  xhr.send();
+  xhr.send(
+    JSON.stringify({
+      cookie,
+    })
+  );
   if (csv.data == 'Auth Failure') return;
   var hiddenLink = document.createElement('a');
   hiddenLink.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv.data);
@@ -232,19 +236,30 @@ function getdbdata() {
   hiddenLink.click();
 }
 
-var cookieupdated = setInterval(update_cookie, 1000 * 60 * 30);
+var cookieupdater = setInterval(update_cookie, 1000 * 60 * 15);
 
 function update_cookie() {
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', cookie_update_api, false);
+  xhr.open('POST', cookie_update_api, false);
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4 && xhr.status === 200) {
-      cookie = xhr.response.cookie;
+      cookie = JSON.parse(xhr.responseText).cookie;
     } else if (xhr.readyState === 4 && xhr.status === 401) {
       alert('An error has occured, please log back in!');
-      location.replace('/logout');
+      logout_user();
     }
   };
-  xhr.send({ cookie });
+  xhr.send(
+    JSON.stringify({
+      cookie,
+    })
+  );
+}
+
+function logout_user() {
+  var hiddenform = document.createElement('form');
+  hiddenform.action = '/logout?_method=DELETE';
+  hiddenform.method = 'POST';
+  hiddenform.submit();
 }

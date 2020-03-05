@@ -16,7 +16,7 @@ const crypto = require('crypto');
 const sk = crypto.randomBytes(256).toString('hex');
 const session_secret = crypto.randomBytes(512).toString('hex');
 const hashing_algo = 'sha256';
-const EXPIRATION_TIME_MILLI = 1000 * 60 * /*Number of minutes*/ 60;
+const EXPIRATION_TIME_MILLI = 1000 * 60 * /*Number of minutes*/ 30;
 
 function create_cookie(uname) {
   const login_time = Date.now();
@@ -290,7 +290,7 @@ app.post('/updatedata', (req, res) => {
   }
 });
 
-app.get('/revalidatecookie', (req, res) => {
+app.post('/revalidatecookie', (req, res) => {
   if (verify_cookie_auth(req.body.cookie)) {
     const new_cookie = create_cookie(req.body.cookie.details.username);
     res.send({ cookie: new_cookie });
@@ -299,11 +299,12 @@ app.get('/revalidatecookie', (req, res) => {
   }
 });
 
-app.get('/getexcel', (req, res) => {
-  if (loggedInTokens.has(req.body.token)) {
+app.post('/getexcel', (req, res) => {
+  if (verify_cookie_auth(req.body.cookie)) {
     res.send({ data: getDataExcel });
+  } else {
+    res.send({ data: 'Auth Failure' });
   }
-  res.send({ data: 'Auth Failure' });
 });
 
 app.post('/changePassword', checkAuthenticated, async (req, res) => {
