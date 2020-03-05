@@ -63,6 +63,14 @@ paliperidone_palmitate_link.setAttribute(
 );
 
 /* SET DESCRIPTIONS */
+paliperidone_d.innerHTML = old_info['paliperidone'].description;
+olanzapine_d.innerHTML = old_info['olanzapine'].description;
+quetiapine_d.innerHTML = old_info['quetiapine'].description;
+risperdal_consta_d.innerHTML = ld_info['risperdal_consta'].description;
+paliperidone_palmitate_d.innerHTML =
+  old_info['paliperidone_palmitate'].description;
+
+/* SET SIDE EFFECTS */
 function generate_se_from_list(se_list) {
   var str = '';
   for (var i = 0; i < se_list.length; ++i) {
@@ -73,29 +81,21 @@ function generate_se_from_list(se_list) {
   }
   return str;
 }
-paliperidone_d.innerHTML = generate_se_from_list(
-  old_info['paliperidone'].description
+paliperidone_s.innerHTML = generate_se_from_list(
+  old_info['paliperidone'].side_effects
 );
-olanzapine_d.innerHTML = generate_se_from_list(
-  old_info['olanzapine'].description
+olanzapine_s.innerHTML = generate_se_from_list(
+  old_info['olanzapine'].side_effects
 );
-quetiapine_d.innerHTML = generate_se_from_list(
-  old_info['quetiapine'].description
+quetiapine_s.innerHTML = generate_se_from_list(
+  old_info['quetiapine'].side_effects
 );
-risperdal_consta_d.innerHTML = ogenerate_se_from_list(
-  ld_info['risperdal_consta'].description
+risperdal_consta_s.innerHTML = generate_se_from_list(
+  old_info['risperdal_consta'].side_effects
 );
-paliperidone_palmitate_d.innerHTML = generate_se_from_list(
-  old_info['paliperidone_palmitate'].description
+paliperidone_palmitate_s.innerHTML = generate_se_from_list(
+  old_info['paliperidone_palmitate'].side_effects
 );
-
-/* SET SIDE EFFECTS */
-paliperidone_s.innerHTML = old_info['paliperidone'].side_effects;
-olanzapine_s.innerHTML = old_info['olanzapine'].side_effects;
-quetiapine_s.innerHTML = old_info['quetiapine'].side_effects;
-risperdal_consta_s.innerHTML = old_info['risperdal_consta'].side_effects;
-paliperidone_palmitate_s.innerHTML =
-  old_info['paliperidone_palmitate'].side_effects;
 
 ///////////////////////////////////////////////// Page Setup /////////////////////////////////////////////////
 
