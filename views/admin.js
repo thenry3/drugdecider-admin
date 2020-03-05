@@ -66,7 +66,7 @@ paliperidone_palmitate_link.setAttribute(
 paliperidone_d.innerHTML = old_info['paliperidone'].description;
 olanzapine_d.innerHTML = old_info['olanzapine'].description;
 quetiapine_d.innerHTML = old_info['quetiapine'].description;
-risperdal_consta_d.innerHTML = ld_info['risperdal_consta'].description;
+risperdal_consta_d.innerHTML = old_info['risperdal_consta'].description;
 paliperidone_palmitate_d.innerHTML =
   old_info['paliperidone_palmitate'].description;
 
