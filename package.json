@@ -22,7 +22,7 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "write-file-atomic": "^3.0.3",
-    "xlsx": "^0.15.5"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"
